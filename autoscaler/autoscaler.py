@@ -13,22 +13,52 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 # --- Configuration from Environment Variables ---
 REDIS_HOST = os.getenv('REDIS_HOST')
-REDIS_PORT = int(os.getenv('REDIS_PORT'))
-REDIS_PASSWORD = os.getenv('REDIS_PASSWORD') # Added for completeness
-QUEUE_NAME_PREFIX = os.getenv('QUEUE_NAME_PREFIX')
-QUEUE_NAME = os.getenv('QUEUE_NAME')
+
+
+def get_int_env(var_name: str, default: int | None = None) -> int:
+    """Retrieve an environment variable and cast it to int.
+
+    Exits the program with a helpful error message if the value is missing or
+    cannot be converted to an integer. When ``default`` is provided and the
+    variable is unset, the default is returned and a warning is logged.
+    """
+
+    value = os.getenv(var_name)
+    if value is None or value == "":
+        if default is not None:
+            logging.warning(
+                "%s not set. Using default %s.", var_name, default
+            )
+            return default
+        logging.error("Required environment variable %s is missing", var_name)
+        raise SystemExit(1)
+    try:
+        return int(value)
+    except ValueError:
+        logging.error(
+            "Environment variable %s must be an integer. Got '%s'", var_name, value
+        )
+        raise SystemExit(1)
+
+
+REDIS_PORT = get_int_env("REDIS_PORT", default=6379)
+REDIS_PASSWORD = os.getenv("REDIS_PASSWORD")  # Added for completeness
+QUEUE_NAME_PREFIX = os.getenv("QUEUE_NAME_PREFIX")
+QUEUE_NAME = os.getenv("QUEUE_NAME")
 
 N8N_WORKER_SERVICE_NAME = os.getenv('N8N_WORKER_SERVICE_NAME')
 COMPOSE_PROJECT_NAME = os.getenv('COMPOSE_PROJECT_NAME') # e.g., "n8n-workers"
 COMPOSE_FILE_PATH = os.getenv('COMPOSE_FILE_PATH') # Path inside this container
 
-MIN_REPLICAS = int(os.getenv('MIN_REPLICAS'))
-MAX_REPLICAS = int(os.getenv('MAX_REPLICAS'))
-SCALE_UP_QUEUE_THRESHOLD = int(os.getenv('SCALE_UP_QUEUE_THRESHOLD'))
-SCALE_DOWN_QUEUE_THRESHOLD = int(os.getenv('SCALE_DOWN_QUEUE_THRESHOLD'))
+MIN_REPLICAS = get_int_env("MIN_REPLICAS", default=1)
+MAX_REPLICAS = get_int_env("MAX_REPLICAS", default=5)
+SCALE_UP_QUEUE_THRESHOLD = get_int_env("SCALE_UP_QUEUE_THRESHOLD", default=5)
+SCALE_DOWN_QUEUE_THRESHOLD = get_int_env(
+    "SCALE_DOWN_QUEUE_THRESHOLD", default=1
+)
 
-POLLING_INTERVAL_SECONDS = int(os.getenv('POLLING_INTERVAL_SECONDS'))
-COOLDOWN_PERIOD_SECONDS = int(os.getenv('COOLDOWN_PERIOD_SECONDS'))
+POLLING_INTERVAL_SECONDS = get_int_env("POLLING_INTERVAL_SECONDS", default=10)
+COOLDOWN_PERIOD_SECONDS = get_int_env("COOLDOWN_PERIOD_SECONDS", default=10)
 
 last_scale_time = 0
 
