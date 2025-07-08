@@ -1,0 +1,20 @@
+# Exclude Git repository
+.git
+
+# Python bytecode and caches
+__pycache__/
+*.pyc
+
+# Node dependencies
+node_modules/
+
+# Environment files
+.env
+*.env
+
+# Build artifacts
+build/
+dist/
+*.log
+*.tmp
+
