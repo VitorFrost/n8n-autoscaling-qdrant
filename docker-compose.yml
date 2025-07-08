@@ -4,6 +4,7 @@ volumes:
   n8n_main:
   n8n_webhook:
   traefik_data:
+  qdrant_data:
 
 networks:
   n8n-network:
@@ -115,6 +116,15 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    networks:
+      - n8n-network
+      - shark
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    restart: unless-stopped
+    volumes:
+      - qdrant_data:/qdrant/storage
     networks:
       - n8n-network
       - shark

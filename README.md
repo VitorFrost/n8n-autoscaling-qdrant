@@ -33,6 +33,7 @@ graph TD
 - Redis queue monitoring
 - Docker Compose-based deployment
 - Health checks for all services
+- Qdrant vector database integration
 
 ## Prerequisites
 
