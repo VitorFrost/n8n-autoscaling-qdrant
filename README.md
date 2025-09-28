@@ -78,6 +78,8 @@ We create the shark external network in step 4 to make it easier to plug in othe
 | `COOLDOWN_PERIOD_SECONDS` | Time between scaling actions | 180 |
 | `QUEUE_NAME_PREFIX` | Redis queue prefix | `bull` |
 | `QUEUE_NAME` | Redis queue name | `jobs` |
+| `QDRANT_API_KEY` / `QDRANT__SERVICE__API_KEY` | API key for the Qdrant service (optional) |  |
+| `QDRANT_GRPC_PORT` / `QDRANT__SERVICE__GRPC_PORT` | gRPC port for Qdrant service | 6334 |
 
 ### n8n Configuration
 
